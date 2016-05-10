@@ -1,10 +1,10 @@
+#-*- coding: utf-8 -*-
 '''
 A linear regression learning algorithm example using TensorFlow library.
 
 Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
 '''
-
 import tensorflow as tf
 import numpy
 import matplotlib.pyplot as plt
@@ -21,21 +21,25 @@ train_Y = numpy.asarray([1.7,2.76,2.09,3.19,1.694,1.573,3.366,2.596,2.53,1.221,2
 n_samples = train_X.shape[0]
 
 # tf Graph Input
-X = tf.placeholder("float")
-Y = tf.placeholder("float")
+"""placeholder : feed 하는 것, update x"""
+X = tf.placeholder("float")	"""[None, None]"""
+Y = tf.placeholder("float")	"""[None, None] 넣는 값에 따라 scale 변화, 옵션 주면 scale 고정 가능"""
 
 # Create Model
 
 # Set model weights
+"""variable    : update O, session run 할 때 바뀌는 값"""
 W = tf.Variable(rng.randn(), name="weight")
 b = tf.Variable(rng.randn(), name="bias")
 
 # Construct a linear model
-activation = tf.add(tf.mul(X, W), b)
+activation = tf.add(tf.mul(X, W), b)	"""그래프 그리기만 할 뿐 계산 x , y=W*X+b"""
 
 # Minimize the squared errors
-cost = tf.reduce_sum(tf.pow(activation-Y, 2))/(2*n_samples) #L2 loss
-optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost) #Gradient descent
+cost = tf.reduce_sum(tf.pow(activation-Y, 2))/(2*n_samples) #L2 loss	
+"""mean square error"""
+optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost) # Gradient descent
+"""cost값을 minimize로 w,b 값을 찾는다"""
 
 # Initializing the variables
 init = tf.initialize_all_variables()
@@ -46,8 +50,8 @@ with tf.Session() as sess:
 
     # Fit all training data
     for epoch in range(training_epochs):
-        for (x, y) in zip(train_X, train_Y):
-            sess.run(optimizer, feed_dict={X: x, Y: y})
+        for (x, y) in zip(train_X, train_Y):	"""get each scala from vector """
+            sess.run(optimizer, feed_dict={X: x, Y: y})	"""x, y: scala"""
 
         #Display logs per epoch step
         if epoch % display_step == 0:
@@ -55,7 +59,7 @@ with tf.Session() as sess:
                 "W=", sess.run(W), "b=", sess.run(b)
 
     print "Optimization Finished!"
-    training_cost = sess.run(cost, feed_dict={X: train_X, Y: train_Y})
+    training_cost = sess.run(cost, feed_dict={X: train_X, Y: train_Y})	"""train_X, train_Y: vector, 에러차이를 확인""" 
     print "Training cost=", training_cost, "W=", sess.run(W), "b=", sess.run(b), '\n'
 
 

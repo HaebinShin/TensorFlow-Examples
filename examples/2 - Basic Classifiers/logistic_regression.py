@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 '''
 A logistic regression learning algorithm example using TensorFlow library.
 This example is using the MNIST database of handwritten digits (http://yann.lecun.com/exdb/mnist/)
@@ -19,20 +20,32 @@ batch_size = 100
 display_step = 1
 
 # tf Graph Input
-x = tf.placeholder("float", [None, 784]) # mnist data image of shape 28*28=784
-y = tf.placeholder("float", [None, 10]) # 0-9 digits recognition => 10 classes
+x = tf.placeholder("float", [None, 784]) # mnist data image of shape 28*28=784 
+""" vector """
+y = tf.placeholder("float", [None, 10]) # 0-9 digits recognition => 10 classes 
+""" vector """
 
 # Create model
 
 # Set model weights
-W = tf.Variable(tf.zeros([784, 10]))
-b = tf.Variable(tf.zeros([10]))
+W = tf.Variable(tf.zeros([784, 10]))	""" vector """
+b = tf.Variable(tf.zeros([10]))		""" scala """
 
 # Construct model
-activation = tf.nn.softmax(tf.matmul(x, W) + b) # Softmax
+activation = tf.nn.softmax(tf.matmul(x, W) + b) # Softmax 
+""" vec*vec+scala => vec, finally [None, 10] scale """
 
 # Minimize error using cross entropy
 cost = tf.reduce_mean(-tf.reduce_sum(y*tf.log(activation), reduction_indices=1)) # Cross entropy
+"""
+cross-entropy error에 의해 얻은 None(55000) x 10 벡터를 
+10에 대한 축을 기준으로 reduction한다 
+	(reduction_indices=1이 위의 뜻. 즉 scale=55000
+	reduction_indices=0 인 경우, 55000에 대한 축을 기준으로 reduction. 즉 scale=10
+	아무 옵션이 없을 경우, 모든 원소를 다 reduce_sum. 즉 그냥 scala값을 내뱉는다)
+scale이 55000(N)인 벡터값이 나오면 그 값들을 reduce_mean으로 평균내어 cost는 scala값을 갖게 된다 
+
+"""
 optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost) # Gradient Descent
 
 # Initializing the variables
@@ -49,8 +62,13 @@ with tf.Session() as sess:
         # Loop over all batches
         for i in range(total_batch):
             batch_xs, batch_ys = mnist.train.next_batch(batch_size)
+		"""
+		mnist.train.next_batch()에서 batch size만큼 랜덤하게 노드를 뽑아 학습
+		이러한 과정을 total_batch만큼 반복하면서 수행
+		학습시간을 줄이는 효과, overfitting 방지 효과 
+		"""
             # Fit training using batch data
-            sess.run(optimizer, feed_dict={x: batch_xs, y: batch_ys})
+            sess.run(optimizer, feed_dict={x: batch_xs, y: batch_ys})	"""뽑아낸 batch 값으로 optimizer를 수행하여 w, b 업데이트 """
             # Compute average loss
             avg_cost += sess.run(cost, feed_dict={x: batch_xs, y: batch_ys})/total_batch
         # Display logs per epoch step
