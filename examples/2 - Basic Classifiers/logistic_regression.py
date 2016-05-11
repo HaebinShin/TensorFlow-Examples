@@ -28,8 +28,10 @@ y = tf.placeholder("float", [None, 10]) # 0-9 digits recognition => 10 classes
 # Create model
 
 # Set model weights
-W = tf.Variable(tf.zeros([784, 10]))	""" vector """
-b = tf.Variable(tf.zeros([10]))		""" scala """
+W = tf.Variable(tf.zeros([784, 10]))	
+""" vector """
+b = tf.Variable(tf.zeros([10]))		
+""" scala """
 
 # Construct model
 activation = tf.nn.softmax(tf.matmul(x, W) + b) # Softmax 
@@ -57,18 +59,22 @@ with tf.Session() as sess:
 
     # Training cycle
     for epoch in range(training_epochs):
+
+	# 랜덤하게 train data를 선택하여 학습하는 것을 한 세대로 하여 
+	# 여러 세대를 거듭하여 최적화 ( w, b를 찾는다 )
+
         avg_cost = 0.
         total_batch = int(mnist.train.num_examples/batch_size)
         # Loop over all batches
         for i in range(total_batch):
             batch_xs, batch_ys = mnist.train.next_batch(batch_size)
-		"""
-		mnist.train.next_batch()에서 batch size만큼 랜덤하게 노드를 뽑아 학습
-		이러한 과정을 total_batch만큼 반복하면서 수행
-		학습시간을 줄이는 효과, overfitting 방지 효과 
-		"""
+		
+		# mnist.train.next_batch()에서 batch size만큼 랜덤하게 노드를 뽑아 학습
+		# 이러한 과정을 total_batch만큼 반복하면서 수행
+		# 학습시간을 줄이는 효과, overfitting 방지 효과 
+		
             # Fit training using batch data
-            sess.run(optimizer, feed_dict={x: batch_xs, y: batch_ys})	"""뽑아낸 batch 값으로 optimizer를 수행하여 w, b 업데이트 """
+            sess.run(optimizer, feed_dict={x: batch_xs, y: batch_ys})	# 뽑아낸 batch 값으로 optimizer를 수행하여 w, b 업데이트
             # Compute average loss
             avg_cost += sess.run(cost, feed_dict={x: batch_xs, y: batch_ys})/total_batch
         # Display logs per epoch step

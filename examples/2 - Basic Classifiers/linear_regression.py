@@ -22,8 +22,10 @@ n_samples = train_X.shape[0]
 
 # tf Graph Input
 """placeholder : feed 하는 것, update x"""
-X = tf.placeholder("float")	"""[None, None]"""
-Y = tf.placeholder("float")	"""[None, None] 넣는 값에 따라 scale 변화, 옵션 주면 scale 고정 가능"""
+X = tf.placeholder("float")	
+"""[None, None]"""
+Y = tf.placeholder("float")	
+"""[None, None] 넣는 값에 따라 scale 변화, 옵션 주면 scale 고정 가능"""
 
 # Create Model
 
@@ -33,7 +35,8 @@ W = tf.Variable(rng.randn(), name="weight")
 b = tf.Variable(rng.randn(), name="bias")
 
 # Construct a linear model
-activation = tf.add(tf.mul(X, W), b)	"""그래프 그리기만 할 뿐 계산 x , y=W*X+b"""
+activation = tf.add(tf.mul(X, W), b)	
+"""그래프 그리기만 할 뿐 계산 x , y=W*X+b"""
 
 # Minimize the squared errors
 cost = tf.reduce_sum(tf.pow(activation-Y, 2))/(2*n_samples) #L2 loss	
@@ -50,16 +53,16 @@ with tf.Session() as sess:
 
     # Fit all training data
     for epoch in range(training_epochs):
-        for (x, y) in zip(train_X, train_Y):	"""get each scala from vector """
-            sess.run(optimizer, feed_dict={X: x, Y: y})	"""x, y: scala"""
+        for (x, y) in zip(train_X, train_Y):	# get each scala from vector
+            sess.run(optimizer, feed_dict={X: x, Y: y})	# x, y: scala
 
-        #Display logs per epoch step
+        # Display logs per epoch step
         if epoch % display_step == 0:
             print "Epoch:", '%04d' % (epoch+1), "cost=", "{:.9f}".format(sess.run(cost, feed_dict={X: train_X, Y:train_Y})), \
                 "W=", sess.run(W), "b=", sess.run(b)
 
     print "Optimization Finished!"
-    training_cost = sess.run(cost, feed_dict={X: train_X, Y: train_Y})	"""train_X, train_Y: vector, 에러차이를 확인""" 
+    training_cost = sess.run(cost, feed_dict={X: train_X, Y: train_Y})	# train_X, train_Y: vector, 에러차이를 확인
     print "Training cost=", training_cost, "W=", sess.run(W), "b=", sess.run(b), '\n'
 
 
